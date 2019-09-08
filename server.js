@@ -28,13 +28,55 @@ productRoutes.route('/').get(function(req, res) {
     });
 });
 
-productRoutes.route('/:id').get(function(req, res) {
-    let id = req.params.id;
-    Product.findById(id, function(err, product) {
-        res.json(product);
-    });
+
+// INDEX
+app.get('/api/products', (req, res) => {
+    Product.find({}, (err, allProducts) => {
+    if (err) { console.log(err) }
+    res.json(allProducts);
+  });
+});
+// SHOW
+app.get('/api/products/:id', (req, res) => {
+    Product.findById(req.params.id, (err, foundProduct) => {
+    if (err) { console.log(err) }
+    res.json(foundProduct);
+  });
 });
 
+// //CREATE
+// app.post('/api/products', (req, res)=>{
+ 
+//   Product.create(req.body, (error, createdProduct)=>{
+//       res.json(createdProduct);
+//   });
+// });
+
+// UPDATE
+app.put('/api/products/:id', (req, res) => {
+
+  Product.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, updatedModel) => {
+    res.json(updatedModel);
+  });
+});
+
+
+// DELETE
+app.delete('/api/products/:id', (req, res) => {
+    Product.findByIdAndRemove(req.params.id, (err, data) => {
+    if (err) { console.log(err) }
+    res.json(data);
+  });
+});
+
+// productRoutes.route('/:id').get(function(req, res) {
+//     let id = req.params.id;
+//     Product.findById(id, function(err, product) {
+//         res.json(product);
+//     });
+// });
+
+//CREATE
 productRoutes.route('/add').post(function(req, res) {
     let product = new Product(req.body);
     product.save()
@@ -46,25 +88,25 @@ productRoutes.route('/add').post(function(req, res) {
         });
 });
 
-productRoutes.route('/update/:id').post(function(req, res) {
-    Product.findById(req.params.id, function(err, product) {
-        if (!product)
-            res.status(404).send('data is not found');
-        else
-            product.name = req.body.name;
-            product.image= req.body.image; 
-            product.color = req.body.color;
-            product.price = req.body.price;
-            product.description = req.body.description;
+// productRoutes.route('/update/:id').post(function(req, res) {
+//     Product.findById(req.params.id, function(err, product) {
+//         if (!product)
+//             res.status(404).send('data is not found');
+//         else
+//             product.name = req.body.name;
+//             product.image= req.body.image; 
+//             product.color = req.body.color;
+//             product.price = req.body.price;
+//             product.description = req.body.description;
 
-            product.save().then(product => {
-                res.json(' updated');
-            })
-            .catch(err => {
-                res.status(400).send("Update not possible");
-            });
-    });
-});
+//             product.save().then(product => {
+//                 res.json(' updated');
+//             })
+//             .catch(err => {
+//                 res.status(400).send("Update not possible");
+//             });
+//     });
+// });
 
 app.use('/products',productRoutes);
 
