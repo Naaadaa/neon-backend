@@ -37,7 +37,7 @@ app.get('/api/products', (req, res) => {
   });
 });
 // SHOW
-app.get('/api/products/:id', (req, res) => {
+app.get('/products/:id', (req, res) => {
     Product.findById(req.params.id, (err, foundProduct) => {
     if (err) { console.log(err) }
     res.json(foundProduct);
@@ -53,16 +53,17 @@ app.get('/api/products/:id', (req, res) => {
 // });
 
 // UPDATE
-app.put('/api/products/:id', (req, res) => {
+// app.put('/api/products/:id', (req, res) => {
 
-  Product.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, updatedModel) => {
-    res.json(updatedModel);
-  });
-});
+//   Product.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, updatedModel) => {
+//     res.json(updatedModel);
+//   });
+// });
 
 
 // DELETE
-app.delete('/api/products/:id', (req, res) => {
+
+app.delete('/products/delete/:id', (req, res) => {
     Product.findByIdAndRemove(req.params.id, (err, data) => {
     if (err) { console.log(err) }
     res.json(data);
@@ -88,25 +89,25 @@ productRoutes.route('/add').post(function(req, res) {
         });
 });
 
-// productRoutes.route('/update/:id').post(function(req, res) {
-//     Product.findById(req.params.id, function(err, product) {
-//         if (!product)
-//             res.status(404).send('data is not found');
-//         else
-//             product.name = req.body.name;
-//             product.image= req.body.image; 
-//             product.color = req.body.color;
-//             product.price = req.body.price;
-//             product.description = req.body.description;
+productRoutes.route('/update/:id').post(function(req, res) {
+    Product.findById(req.params.id, function(err, product) {
+        if (!product)
+            res.status(404).send('data is not found');
+        else
+            product.name = req.body.name;
+            product.image= req.body.image; 
+            product.color = req.body.color;
+            product.price = req.body.price;
+            product.description = req.body.description;
 
-//             product.save().then(product => {
-//                 res.json(' updated');
-//             })
-//             .catch(err => {
-//                 res.status(400).send("Update not possible");
-//             });
-//     });
-// });
+            product.save().then(product => {
+                res.json(' updated');
+            })
+            .catch(err => {
+                res.status(400).send("Update not possible");
+            });
+    });
+});
 
 app.use('/products',productRoutes);
 
